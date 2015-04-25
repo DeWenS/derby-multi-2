@@ -1,0 +1,9 @@
+{
+  "generator-derby": {
+    "project": "derby multi 2",
+    "apps": [
+      "app"
+    ],
+    "coffee": true
+  }
+}
