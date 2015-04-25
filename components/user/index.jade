@@ -3,5 +3,11 @@ index:
     form(on-submit='saveParams()')
         .form-group
             label Name = {{user.name}}
+                if user.prof
+                    | , Professor
             input(type='text', value='{{name}}').form-control
+            .checkbox
+                label
+                    input(type='checkbox', checked='{{is_professor}}')
+                    | Professor
         button(type='submit').btn.btn-primary Save
