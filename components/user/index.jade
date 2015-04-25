@@ -1,0 +1,7 @@
+index:
+    h2 User options
+    form(on-submit='saveParams()')
+        .form-group
+            label Name = {{user.name}}
+            input(type='text', value='{{name}}').form-control
+        button(type='submit').btn.btn-primary Save
