@@ -4,20 +4,9 @@ module.exports = class Game
   view: __dirname
 
   init: ->
-    @games = @model.root.at('_page.games')
-    @model.ref 'games', @games
-    @model.set 'game_name', null
+    @game = @model.root.at('_page.game')
+    @model.ref 'game', @game
 
-  addGame: ->
-    name = @model.get 'game_name'
-    @model.add @games, {
-      name: name,
-      players: {},
-      userIds: [],
-      rounds: {},
-      ready: false,
-      started: false,
-      finished: false,
-      currentRound: 1
-    }
-    @model.set 'game_name', null
+  join: ->
+    user = @model.root.get '_page.user'
+    console.log user

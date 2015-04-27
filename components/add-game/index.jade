@@ -1,0 +1,8 @@
+index:
+    h2 Add game
+
+    form(on-submit='add()')
+        .form-group
+            label Type name of the game
+            input(type='text', value='{{game_name}}').form-control
+        button(type='submit').btn.btn-primary Create new game

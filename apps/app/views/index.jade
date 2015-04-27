@@ -1,4 +1,5 @@
 import:(src="./home")
+import:(src="./game-page")
 
 Title:
   | {{_page.title}}
@@ -9,7 +10,11 @@ Body:
   view(is="footer", year="2014")
 
 header:
-  h1 Header
+  header
+    nav.navbar.navbar-inverse
+        .container
+            a(href='/').navbar-brand Multi
 
 footer:
-  p Footer {{@year}}
+  footer
+    p Footer {{@year}}
