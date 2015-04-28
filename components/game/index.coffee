@@ -12,18 +12,66 @@ module.exports = class Game
     @players = @model.at 'game.players'
     @userIds = @model.at 'game.userIds'
     @model.start 'canJoin', @user, @userIds, @canJoin.bind(@)
-    @model.start 'canStart', @game,@userIds, @canStart.bind(@)
+    @model.start 'canStart', @game, @userIds, @canStart.bind(@)
     @page.root = @
 
 
+#    ids = Object.keys('model')
+#    @rounds = @model.refList 'rounds', 'game.rounds', 'roundIds'
+#    console.log @model.get('rounds')
+#    console.log @model.get('roundIds')
     @player = @model.ref 'player', @players.at(@user.get('id'))
+
+    @model.start 'roundIds', @game, @roundIds.bind(@)
+    @model.start 'price', @game, @calcPrice.bind(@)
+    @model.start 'profit', @game, @calcProfit.bind(@)
+    @model.start 'totalProfit', @game, @calcTotalProfit.bind(@)
 
 #    @model.start 'answered', @game, @nextRound.bind(@)
 
 
 #    @model.set 'answer', null
-
   create: ->
+#    @model.on 'all', 'game.currentRound', @setNotAnswered.bind(@)
+
+#  setNotAnswered: ->
+#    @player.setEach
+#      answered: false
+#      answer: undefined
+
+  calcPrice: (game) ->
+    price = {}
+    for rkey of game.rounds
+      round = game.rounds[rkey]
+      i = 0
+      for uid of round
+        i = i + parseInt(round[uid]);
+      pr = 45 - 0.2 * i
+      price[rkey] = pr
+    price
+
+  calcProfit: (game) ->
+    profit = {}
+    price = @model.get('price')
+    for uid in game.userIds
+      profit[uid] = {}
+      for rkey of game.rounds
+        pr = (price[rkey] - 5) * game.rounds[rkey][uid]
+        profit[uid][rkey] = parseInt(pr)
+    profit
+
+  calcTotalProfit: (game) ->
+    totalProfit = {}
+    profit = @model.get('profit')
+    for uid in game.userIds
+      totalProfit[uid] = 0
+      for rkey of game.rounds
+        totalProfit[uid] += profit[uid][rkey]
+    totalProfit
+
+
+  roundIds: (game)->
+    Object.keys(game.rounds)
 
 
   nextRound: () ->
@@ -33,10 +81,10 @@ module.exports = class Game
       unless round[userId]?
         return false
     round = @game.increment 'currentRound'
-    @player.setEach
-      answered: false
-      answer: undefined
-    if round >= @maxRounds
+    for pkey of game.players
+      @game.set 'players.' + pkey + '.answered', false
+      @game.set 'players.' + pkey + '.answer', undefined
+    if round > @maxRounds
       @game.set 'finished', true
 
 
@@ -52,7 +100,6 @@ module.exports = class Game
 #    @model.set 'canJoin', @canJoin()
 
   canJoin: (user, userIds)->
-    console.log arguments
 #    user = @model.root.get @user
 #    userIds = @model.root.get @userIds
     if (user.id in userIds)
@@ -65,7 +112,7 @@ module.exports = class Game
 
   canStart: (game, userIds)->
 #    userIds = @userIds.get()
-    console.log arguments
+#    console.log arguments
     if game.started
       false
     else if userIds.length >= @usersToStart
