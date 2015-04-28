@@ -18,13 +18,19 @@ app.loadStyles __dirname + '/styles'
 
 global.app = app
 
-app.get '**', (page, model, params, next) ->
+app.get '/:foo*', (page, model, params, next) ->
+  userId = model.get '_session.userId'
   user = model.at 'users.' + userId
+
   model.subscribe user, ->
     model.ref '_page.user', user
+    if ((model.get '_page.user') is undefined)
+      model.set '_page.user.id', userId
+      model.set '_page.user.name', 'NoName'
+      model.set '_page.user.prof', false
     next();
 
-app.get '/', (page, model, params) ->
+app.get 'home', '/', (page, model, params) ->
   userId = model.get '_session.userId'
 
   user = model.at 'users.' + userId
@@ -35,7 +41,7 @@ app.get '/', (page, model, params) ->
     model.ref '_page.games', games
     page.render 'home'
 
-app.get '/games/:gameId', (page, model, params) ->
+app.get 'game', '/games/:gameId', (page, model, params) ->
   gameId = params.gameId
   game = model.at 'games.' + gameId
 
@@ -43,7 +49,8 @@ app.get '/games/:gameId', (page, model, params) ->
   user = model.at 'users.' + userId
 
   model.subscribe user, game,  ->
-    console.log model.get '_page.user'
+    if ((model.get game) is undefined)
+      page.redirect '/'
     model.ref '_page.game', game
-    model.ref '_page.user', user
+#    model.ref '_page.user', user
     page.render 'game-page'

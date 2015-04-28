@@ -1,4 +1,17 @@
 index:
     h2 Welcome to game "{{game.name}}"!
-
-    a(on-click='join()').btn.btn-primary Join
+    if canStart
+        a(on-click='start()').btn.btn-warning Start
+    .container-fluid
+        .col-md-3
+            h3 Players
+            if canJoin
+                a(on-click='join()').btn.btn-primary Join
+            table.table
+                thead
+                    tr
+                        th Id
+                tbody
+                    each game.userIds as #uid
+                        tr
+                            td {{#uid}}
