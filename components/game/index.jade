@@ -1,17 +1,35 @@
 index:
-    h2 Welcome to game "{{game.name}}"!
-    if canStart
-        a(on-click='start()').btn.btn-warning Start
-    .container-fluid
-        .col-md-3
-            h3 Players
-            if canJoin
-                a(on-click='join()').btn.btn-primary Join
-            table.table
-                thead
-                    tr
-                        th Id
-                tbody
-                    each game.userIds as #uid
-                        tr
-                            td {{#uid}}
+  h2 Welcome to game "{{game.name}}"!
+  if canStart
+    a(href="pathFor('home')") Home
+    a(href="pathFor('game', #root._page.game.id, #root._page.game.type)")
+      | Game
+    a(on-click='start()').btn.btn-warning Start
+  .container-fluid
+    .col-md-3
+      h3 Players
+      if canJoin
+        a(on-click='join()').btn.btn-primary Join
+      table.table
+        thead
+          tr
+            th Id
+        tbody
+          each game.userIds as #uid
+            tr
+              td {{#uid}}
+    .col-md-3
+      if game.started && !game.finished
+        h2 Round {{game.currentRound}}
+        h3 Answer
+          if !player.answered
+            form(on-submit='answer()')
+              input(value='{{answer}}', type='number')
+              button Submit
+          else
+            p your answer: {{player.answer}}
+    .col-md-6
+      h2 Results
+
+
+//answer:

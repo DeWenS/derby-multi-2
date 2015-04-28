@@ -26,7 +26,7 @@
     "racer-highway": "~3.0.1",
     "livedb-mongo": "~0.4.1",
     "racer-bundle": "~0.1.1",
-    "derby": "~0.6.0-alpha45",
+    "derby": "0.6.0-alpha45",
     "connect-mongo": "~0.8.1"
   },
   "author": {
