@@ -23,7 +23,7 @@
     "express": "~4.12.3",
     "derby-stylus": "~0.1.0",
     "derby-jade": "~0.6.17",
-    "racer-highway": "~3.0.1",
+    "racer-highway": "<3.0.0",
     "livedb-mongo": "~0.4.1",
     "racer-bundle": "~0.1.1",
     "derby": "0.6.0-alpha45",

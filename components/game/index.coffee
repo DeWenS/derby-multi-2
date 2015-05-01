@@ -11,6 +11,7 @@ module.exports = class Game
     @model.ref 'game', @game
     @players = @model.at 'game.players'
     @userIds = @model.at 'game.userIds'
+    @rounds = @game.at 'rounds'
     @model.start 'canJoin', @user, @userIds, @canJoin.bind(@)
     @model.start 'canStart', @game, @userIds, @canStart.bind(@)
     @page.root = @
@@ -22,10 +23,10 @@ module.exports = class Game
 #    console.log @model.get('roundIds')
     @player = @model.ref 'player', @players.at(@user.get('id'))
 
-    @model.start 'roundIds', @game, @roundIds.bind(@)
-    @model.start 'price', @game, @calcPrice.bind(@)
-    @model.start 'profit', @game, @calcProfit.bind(@)
-    @model.start 'totalProfit', @game, @calcTotalProfit.bind(@)
+    @model.start 'roundIds', @rounds, @roundIds.bind(@)
+    @model.start 'price', @rounds, @calcPrice.bind(@)
+    @model.start 'profit', @rounds, @calcProfit.bind(@)
+    @model.start 'totalProfit', @rounds, @calcTotalProfit.bind(@)
 
 #    @model.start 'answered', @game, @nextRound.bind(@)
 
@@ -39,10 +40,10 @@ module.exports = class Game
 #      answered: false
 #      answer: undefined
 
-  calcPrice: (game) ->
+  calcPrice: (rounds) ->
     price = {}
-    for rkey of game.rounds
-      round = game.rounds[rkey]
+    for rkey of rounds
+      round = rounds[rkey]
       i = 0
       for uid of round
         i = i + parseInt(round[uid]);
@@ -50,28 +51,28 @@ module.exports = class Game
       price[rkey] = pr
     price
 
-  calcProfit: (game) ->
+  calcProfit: (rounds) ->
     profit = {}
     price = @model.get('price')
-    for uid in game.userIds
+    for uid in @game.get('userIds')
       profit[uid] = {}
-      for rkey of game.rounds
-        pr = (price[rkey] - 5) * game.rounds[rkey][uid]
+      for rkey of rounds
+        pr = (price[rkey] - 5) * rounds[rkey][uid]
         profit[uid][rkey] = parseInt(pr)
     profit
 
-  calcTotalProfit: (game) ->
+  calcTotalProfit: (rounds) ->
     totalProfit = {}
     profit = @model.get('profit')
-    for uid in game.userIds
+    for uid in @game.get('userIds')
       totalProfit[uid] = 0
-      for rkey of game.rounds
+      for rkey of rounds
         totalProfit[uid] += profit[uid][rkey]
     totalProfit
 
 
-  roundIds: (game)->
-    Object.keys(game.rounds)
+  roundIds: (rounds)->
+    Object.keys(rounds)
 
 
   nextRound: () ->
@@ -130,6 +131,7 @@ module.exports = class Game
     @player.setEach
       answered: true
       answer: @model.get 'answer'
+    @model.set 'answer', null
     @nextRound()
 
     false
