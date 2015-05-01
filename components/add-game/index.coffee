@@ -17,7 +17,7 @@ module.exports = class AddGame
         name: name,
         players: {},
         userIds: [],
-        rounds: {},
+        rounds: [],
         ready: false,
         started: false,
         finished: false,

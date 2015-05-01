@@ -1,3 +1,5 @@
+require 'yamlify/register'
+
 async = require 'async'
 derby = require 'derby'
 
@@ -26,7 +28,7 @@ derby.run () ->
   server.on 'upgrade', upgrade
 
   bundleApp = (app, cb) ->
-    app.writeScripts store, publicDir, {extensions: ['.coffee']}, (err) ->
+    app.writeScripts store, publicDir, {extensions: ['.coffee', '.yaml', '.yml']}, (err) ->
       if err
         console.log "Bundle don't created:",
             chalk.red(app.name), ', error:', err

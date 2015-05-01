@@ -1,5 +1,6 @@
 liveDbMongo = require 'livedb-mongo'
 coffeeify = require 'coffeeify'
+yamlify = require 'yamlify'
 
 module.exports = (derby, publicDir) ->
   mongo = liveDbMongo process.env.MONGO_URL + '?auto_reconnect', {safe: true}
@@ -11,6 +12,7 @@ module.exports = (derby, publicDir) ->
   store.on 'bundle', (browserify) ->
 
     browserify.transform {global: true}, coffeeify
+    browserify.transform yamlify
 
     pack = browserify.pack
 

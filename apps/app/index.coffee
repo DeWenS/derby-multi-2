@@ -46,6 +46,14 @@ global.app = app
 #
 #app.get 'game', '/:gameId/:type', ['user', 'game', 'player']
 
+app.proto.f  = (n) ->
+  n = parseFloat(n)
+  return if isNaN(n)
+  n = n.toFixed(2)
+  n = ('' + n).replace(/\d(?=(\d{3})+(\.|$))/g, '$&,')
+  n = n.replace /\.00$/, ''
+  n.replace /\.(.)0$/, '.$1'
+
 app.get '/:foo*', (page, model, params, next) ->
   userId = model.get '_session.userId'
   user = model.at 'users.' + userId
@@ -79,6 +87,8 @@ app.get '/games/:gameId', (page, model, params) ->
   model.subscribe user, game,  ->
     if ((model.get game) is undefined)
       page.redirect '/'
+
+
     model.ref '_page.game', game
 #    model.ref '_page.user', user
     page.render 'game-page'

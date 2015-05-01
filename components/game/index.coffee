@@ -1,8 +1,10 @@
+constants = require '../../apps/app/constants'
+
 module.exports = class Game
 
   name: 'game'
   view: __dirname
-  usersToStart: 2
+  usersToStart: constants.test
   maxRounds: 3
 
   init: ->
@@ -41,9 +43,9 @@ module.exports = class Game
 #      answer: undefined
 
   calcPrice: (rounds) ->
-    price = {}
-    for rkey of rounds
-      round = rounds[rkey]
+    price = []
+    for round, rkey in rounds
+      console.log rkey
       i = 0
       for uid of round
         i = i + parseInt(round[uid]);
@@ -55,9 +57,9 @@ module.exports = class Game
     profit = {}
     price = @model.get('price')
     for uid in @game.get('userIds')
-      profit[uid] = {}
-      for rkey of rounds
-        pr = (price[rkey] - 5) * rounds[rkey][uid]
+      profit[uid] = []
+      for round, rkey in rounds
+        pr = (price[rkey] - 5) * round[uid]
         profit[uid][rkey] = parseInt(pr)
     profit
 
@@ -66,7 +68,7 @@ module.exports = class Game
     profit = @model.get('profit')
     for uid in @game.get('userIds')
       totalProfit[uid] = 0
-      for rkey of rounds
+      for round, rkey in rounds
         totalProfit[uid] += profit[uid][rkey]
     totalProfit
 
@@ -74,17 +76,24 @@ module.exports = class Game
   roundIds: (rounds)->
     Object.keys(rounds)
 
+  isWatcher: ->
+    @user.prof?
+
+  showData: (user, game, roundId) ->
+    if ((user.prof) || game.currentRound >= roundId + 1)
+      true
+    false
 
   nextRound: () ->
     game = @game.get()
-    round = game.rounds[game.currentRound]
+    round = game.rounds[game.currentRound - 1]
     for userId in game.userIds
       unless round[userId]?
         return false
     round = @game.increment 'currentRound'
     for pkey of game.players
       @game.set 'players.' + pkey + '.answered', false
-      @game.set 'players.' + pkey + '.answer', undefined
+      @game.del 'players.' + pkey + '.answer'
     if round > @maxRounds
       @game.set 'finished', true
 
@@ -107,6 +116,8 @@ module.exports = class Game
       return false
     if (userIds.length >= @usersToStart)
       return false
+    if (user.prof)
+      return false
 
 
     true
@@ -127,11 +138,12 @@ module.exports = class Game
     @game.set 'finished', false
 
   answer: ->
-    @game.set('rounds.' + @game.get('currentRound') + '.' + @user.get('id'), @model.get('answer'))
+    @game.set(
+      'rounds.' + (@game.get('currentRound') - 1) + '.' + @user.get('id'),
+      @model.get('answer')
+    )
     @player.setEach
       answered: true
       answer: @model.get 'answer'
-    @model.set 'answer', null
-    @nextRound()
-
-    false
+    @model.del 'answer', =>
+      @nextRound()

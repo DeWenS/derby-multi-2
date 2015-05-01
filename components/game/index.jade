@@ -24,8 +24,9 @@ index:
         h3 Answer
           if !player.answered
             form(on-submit='answer()')
-              input(value='{{answer}}', type='number')
-              button Submit
+              .form-group
+                input(value='{{answer}}', type='number').form-control
+                button.btn.btn-primary Submit
           else
             p your answer: {{player.answer}}
       else
@@ -33,7 +34,7 @@ index:
           h2 Finished!
     .col-md-6
       h2 Results
-      p {{roundIds}}
+      //on game.currentRound
       table.table
         thead
           tr
@@ -42,19 +43,20 @@ index:
           each game.userIds as #uid
             tr
               td {{#uid}}
-              each roundIds as #rid
-                td {{game.rounds[#rid][#uid]}}
+              each game.rounds as #round
+                td {{#round[#uid]}}
+                | {{console.log(#round)}}
           tr
             td
               b Price
-            each roundIds as #rid
-              td {{price[#rid]}}
+            each price as #pr
+              td {{f(#pr)}}
 
           each game.userIds as #uid
             tr
               td {{#uid}}
-              each roundIds as #rid
-                td {{profit[#uid][#rid]}}
+              each profit[#uid] as #pr
+                td {{#pr}}
               td {{totalProfit[#uid]}}
 
 

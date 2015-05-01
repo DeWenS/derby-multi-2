@@ -23,11 +23,12 @@
     "express": "~4.12.3",
     "derby-stylus": "~0.1.0",
     "derby-jade": "~0.6.17",
-    "racer-highway": "<3.0.0",
+    "racer-highway": "1.5.0",
     "livedb-mongo": "~0.4.1",
     "racer-bundle": "~0.1.1",
     "derby": "0.6.0-alpha45",
-    "connect-mongo": "~0.8.1"
+    "connect-mongo": "~0.8.1",
+    "yamlify": "~0.1.2"
   },
   "author": {
     "name": "Denis Ivanchenko",
