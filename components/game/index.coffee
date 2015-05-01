@@ -26,9 +26,11 @@ module.exports = class Game
     @player = @model.ref 'player', @players.at(@user.get('id'))
 
     @model.start 'roundIds', @rounds, @roundIds.bind(@)
-    @model.start 'price', @rounds, @calcPrice.bind(@)
-    @model.start 'profit', @rounds, @calcProfit.bind(@)
-    @model.start 'totalProfit', @rounds, @calcTotalProfit.bind(@)
+
+
+    @model.start 'price', @players, @calcPrice.bind(@)
+    @model.start 'profit', @players, @calcProfit.bind(@)
+    @model.start 'totalProfit', @players, @calcTotalProfit.bind(@)
 
 #    @model.start 'answered', @game, @nextRound.bind(@)
 
@@ -42,33 +44,39 @@ module.exports = class Game
 #      answered: false
 #      answer: undefined
 
-  calcPrice: (rounds) ->
-    price = []
-    for round, rkey in rounds
-      console.log rkey
-      i = 0
-      for uid of round
-        i = i + parseInt(round[uid]);
-      pr = 45 - 0.2 * i
-      price[rkey] = pr
-    price
-
-  calcProfit: (rounds) ->
-    profit = {}
-    price = @model.get('price')
-    for uid in @game.get('userIds')
-      profit[uid] = []
+  calcPrice: (players) ->
+    prices = []
+    for uid of players
+      rounds = players[uid].rounds
       for round, rkey in rounds
-        pr = (price[rkey] - 5) * round[uid]
+        unless prices[rkey]?
+          prices[rkey] = 0
+        prices[rkey] += parseInt(round)
+
+    for price, pkey in prices
+      prices[pkey] = 45 - 0.2 * price
+
+    prices
+
+  calcProfit: (players) ->
+    profit = {}
+    prices = @model.get('price')
+
+    for uid of players
+      player = players[uid]
+      profit[uid] = []
+      for round, rkey in player.rounds
+        pr = (prices[rkey] - 5) * round
         profit[uid][rkey] = parseInt(pr)
     profit
 
-  calcTotalProfit: (rounds) ->
+  calcTotalProfit: (players) ->
     totalProfit = {}
     profit = @model.get('profit')
-    for uid in @game.get('userIds')
+    for uid of players
+      player = players[uid]
       totalProfit[uid] = 0
-      for round, rkey in rounds
+      for round, rkey in player.rounds
         totalProfit[uid] += profit[uid][rkey]
     totalProfit
 
@@ -86,10 +94,15 @@ module.exports = class Game
 
   nextRound: () ->
     game = @game.get()
-    round = game.rounds[game.currentRound - 1]
-    for userId in game.userIds
-      unless round[userId]?
+#    round = game.rounds[game.currentRound - 1]
+
+
+#    for userId in game.userIds
+    for userId of game.players
+      user = game.players[userId]
+      unless user.rounds[game.currentRound - 1]?
         return false
+
     round = @game.increment 'currentRound'
     for pkey of game.players
       @game.set 'players.' + pkey + '.answered', false
@@ -104,7 +117,7 @@ module.exports = class Game
     user = @model.root.get @user
     @players.add
       id: user.id
-#      hello: 'world'
+      rounds: []
     @userIds.push user.id
 
 #    @model.set 'canJoin', @canJoin()
@@ -138,10 +151,15 @@ module.exports = class Game
     @game.set 'finished', false
 
   answer: ->
-    @game.set(
-      'rounds.' + (@game.get('currentRound') - 1) + '.' + @user.get('id'),
+#    @game.set(
+#      'rounds.' + (@game.get('currentRound') - 1) + '.' + @user.get('id'),
+#      @model.get('answer')
+#    )
+    @player.set(
+      'rounds.' + (@game.get('currentRound') - 1),
       @model.get('answer')
     )
+
     @player.setEach
       answered: true
       answer: @model.get 'answer'
