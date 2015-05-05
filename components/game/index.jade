@@ -19,7 +19,7 @@ index:
             tr
               td {{#uid}}
     .col-md-3
-      if game.started && !game.finished
+      if game.started && !game.finished && !user.prof
         h2 Round {{game.currentRound}}
         h3 Answer
           if !player.answered
@@ -39,25 +39,39 @@ index:
         on game
           thead
             tr
-              th test
+              th Users
+              each [0,1,2,3,4,5,6,7,8,9] as #rid
+                if #rid < (game.currentRound - 1)
+                  th Round {{#rid+1}}
           tbody
             each game.userIds as #uid
-              tr
-                td {{#uid}}
-                each game.players[#uid].rounds as #round
-                  td {{#round}}
+              with game.players[#uid].rounds as #rounds
+                tr
+                  td {{#uid}}
+                  each [0,1,2,3,4,5,6,7,8,9] as #rid
+                    if (#rid < (game.currentRound - 1)) || (user.prof)
+                      td {{#rounds[#rid]}}
             tr
               td
                 b Price
-              each price as #pr
-                td {{f(#pr)}}
+              //each price as #pr
+              each [0,1,2,3,4,5,6,7,8,9] as #rid
+                if #rid < (game.currentRound - 1) || (user.prof)
+                  td {{f(price[#rid])}}
 
+            tr
+              td
+                b Profit
             each game.userIds as #uid
               tr
                 td {{#uid}}
-                each profit[#uid] as #pr
-                  td {{#pr}}
-                td {{totalProfit[#uid]}}
+                //each profit[#uid] as #pr
+                each [0,1,2,3,4,5,6,7,8,9] as #rid
+                  if #rid < (game.currentRound - 1)
+                    td {{profit[#uid][#rid]}}
+                if game.finished || user.prof
+                  td
+                    b {{totalProfit[#uid]}}
 
 
 //answer:

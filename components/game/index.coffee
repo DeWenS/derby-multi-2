@@ -11,6 +11,7 @@ module.exports = class Game
     @user = @model.scope '_page.user'
     @game = @model.scope '_page.game'
     @model.ref 'game', @game
+    @model.ref 'user', @user
     @players = @model.at 'game.players'
     @userIds = @model.at 'game.userIds'
     @rounds = @game.at 'rounds'
