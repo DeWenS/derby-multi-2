@@ -5,7 +5,7 @@ module.exports = class AddGame
 
   init: ->
     @games = @model.root.at('_page.games')
-#    @model.ref 'games', @games
+    #    @model.ref 'games', @games
     @model.set 'game_name', null
 
   add: ->

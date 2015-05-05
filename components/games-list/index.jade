@@ -1,18 +1,19 @@
 index:
-    h2 Games list
-    table.table
-        thead
-            tr
-                //th id
-                th name
-                th
-                th
-        tbody
-            each games as #game
-                tr
-                    //td {{#game.id}}
-                    td {{#game.name}}
-                    td
-                        a(href='/games/{{#game.id}}').btn.btn-primary Enter
-                    td
-                        button.btn.btn-danger(on-click='delete(#game.id)') Delete
+  h2 Games list
+  table.table
+    thead
+      tr
+        //th id
+        th name
+        th
+        th
+    tbody
+      each games as #game
+        tr
+          //td {{#game.id}}
+          td {{#game.name}}
+          td
+            if !#game.started || user.prof
+              a(href='/games/{{#game.id}}').btn.btn-primary Enter
+          td
+            button.btn.btn-danger(on-click='delete(#game.id)') Delete

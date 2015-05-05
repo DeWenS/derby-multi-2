@@ -20,10 +20,10 @@ module.exports = class Game
     @page.root = @
 
 
-#    ids = Object.keys('model')
-#    @rounds = @model.refList 'rounds', 'game.rounds', 'roundIds'
-#    console.log @model.get('rounds')
-#    console.log @model.get('roundIds')
+    #    ids = Object.keys('model')
+    #    @rounds = @model.refList 'rounds', 'game.rounds', 'roundIds'
+    #    console.log @model.get('rounds')
+    #    console.log @model.get('roundIds')
     @player = @model.ref 'player', @players.at(@user.get('id'))
 
     @model.start 'roundIds', @rounds, @roundIds.bind(@)
@@ -95,10 +95,10 @@ module.exports = class Game
 
   nextRound: () ->
     game = @game.get()
-#    round = game.rounds[game.currentRound - 1]
+    #    round = game.rounds[game.currentRound - 1]
 
 
-#    for userId in game.userIds
+    #    for userId in game.userIds
     for userId of game.players
       user = game.players[userId]
       unless user.rounds[game.currentRound - 1]?
