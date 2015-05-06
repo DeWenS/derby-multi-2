@@ -6,6 +6,7 @@ module.exports = class Game
   view: __dirname
   usersToStart: constants.test
   maxRounds: 3
+  style: __dirname
 
   init: ->
     @user = @model.scope '_page.user'

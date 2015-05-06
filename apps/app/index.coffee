@@ -83,13 +83,14 @@ app.get '/games/:gameId', (page, model, params) ->
 
   userId = model.get '_session.userId'
   user = model.at 'users.' + userId
+  users = model.at 'users'
 
-  model.subscribe user, game,  ->
+  model.subscribe user, game, users,  ->
     if ((model.get game) is undefined)
       page.redirect '/'
 
 
     model.ref '_page.game', game
-    model.ref '_page.users', 'users'
+    model.ref '_page.users', users
 #    model.ref '_page.user', user
     page.render 'game-page'

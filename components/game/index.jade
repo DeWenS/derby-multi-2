@@ -1,25 +1,25 @@
 index:
-  h2 Welcome to game "{{game.name}}"!
+  h2 Welcome to "{{game.name}}" game, {{user.name}}!
   if canStart
     //a(href="pathFor('home')") Home
     //a(href="pathFor('game', #root._page.game.id, #root._page.game.type)")
       | Game
     a(on-click='start()').btn.btn-warning Start
   .container-fluid
-    .col-md-3
+    .card
       h2 Players
       if canJoin
         a(on-click='join()').btn.btn-primary Join
       table.table
         thead
           tr
-            th Players:
+            th
         tbody
           each game.userIds as #uid
             tr
               td {{users[#uid].name}}
-    .col-md-3
-      if game.started && !game.finished && !user.prof
+    if game.started && !game.finished && !user.prof
+      .card
         h2 Round {{game.currentRound}}
         h3 Answer
           if !player.answered
@@ -29,10 +29,11 @@ index:
                 button.btn.btn-primary Submit
           else
             p your answer: {{player.answer}}
-      else
-        if game.finished
+    else
+      if game.finished
+        .card
           h2 Finished!
-    .col-md-6
+    .card
       h2 Results
       //on game.currentRound
       table.table
