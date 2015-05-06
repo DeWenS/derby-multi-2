@@ -25,7 +25,7 @@ index:
           if !player.answered
             form(on-submit='answer()')
               .form-group
-                input(value='{{answer}}', type='number', min='0', max='75').form-control
+                input(value='{{answer}}', type='number', min='0', max='75', required='required').form-control
                 button.btn.btn-primary Submit
           else
             p your answer: {{player.answer}}
