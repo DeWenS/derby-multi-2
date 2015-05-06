@@ -9,9 +9,11 @@ module.exports = class Game
 
   init: ->
     @user = @model.scope '_page.user'
+    @users = @model.scope '_page.users'
     @game = @model.scope '_page.game'
     @model.ref 'game', @game
     @model.ref 'user', @user
+    @model.ref 'users', @users
     @players = @model.at 'game.players'
     @userIds = @model.at 'game.userIds'
     @rounds = @game.at 'rounds'

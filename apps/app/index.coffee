@@ -90,5 +90,6 @@ app.get '/games/:gameId', (page, model, params) ->
 
 
     model.ref '_page.game', game
+    model.ref '_page.users', 'users'
 #    model.ref '_page.user', user
     page.render 'game-page'

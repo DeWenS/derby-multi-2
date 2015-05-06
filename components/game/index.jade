@@ -13,11 +13,11 @@ index:
       table.table
         thead
           tr
-            th Id
+            th Players:
         tbody
           each game.userIds as #uid
             tr
-              td {{#uid}}
+              td {{users[#uid].name}}
     .col-md-3
       if game.started && !game.finished && !user.prof
         h2 Round {{game.currentRound}}
@@ -47,7 +47,7 @@ index:
             each game.userIds as #uid
               with game.players[#uid].rounds as #rounds
                 tr
-                  td {{#uid}}
+                  td {{users[#uid].name}}
                   each [0,1,2,3,4,5,6,7,8,9] as #rid
                     if (#rid < (game.currentRound - 1)) || (user.prof)
                       td {{#rounds[#rid]}}
@@ -64,7 +64,7 @@ index:
                 b Profit
             each game.userIds as #uid
               tr
-                td {{#uid}}
+                td {{users[#uid].name}}
                 //each profit[#uid] as #pr
                 each [0,1,2,3,4,5,6,7,8,9] as #rid
                   if #rid < (game.currentRound - 1)
